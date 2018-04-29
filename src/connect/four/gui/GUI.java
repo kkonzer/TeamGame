@@ -29,7 +29,7 @@ public class GUI extends javax.swing.JFrame {
 	String p2Name;
 	String winner;
 	int score1, score2;
-	String background = "MoodyLoop.wav";
+	String background = "/MoodyLoop.wav";
     AudioInputStream audioInputStream;
 	
 	public GUI() {
@@ -39,7 +39,7 @@ public class GUI extends javax.swing.JFrame {
 		//gamePanel = new GamePanel(this);
 		mainMenu = new MainMenuPanel(this);
 		try {
-            audioInputStream = AudioSystem.getAudioInputStream(new File("sounds/"+ background).getAbsoluteFile());
+            audioInputStream = AudioSystem.getAudioInputStream(getClass().getResource(background));
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             clip.start();

@@ -23,8 +23,7 @@ public class MainMenuPanel extends javax.swing.JPanel {
 	private String name1, name2;
 	GUI gui;
 	private boolean isEnabled;
-	String background = "MoodyLoop.wav";
-    String start = "gong.wav";
+    String start = "/gong.wav";
     AudioInputStream audioInputStream;
 	
 	public MainMenuPanel(GUI gui) {
@@ -162,7 +161,7 @@ public class MainMenuPanel extends javax.swing.JPanel {
 		gui.addGamePanel();
 		gui.updateDisplay();
 		try {
-            audioInputStream = AudioSystem.getAudioInputStream(new File("sounds/"+ start).getAbsoluteFile());
+            audioInputStream = AudioSystem.getAudioInputStream(getClass().getResource(start));
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             clip.start();
