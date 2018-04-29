@@ -12,6 +12,15 @@ import connect.four.player.*;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.ImageIcon;
 import javax.swing.Timer;
 
 
@@ -32,6 +41,10 @@ public class GamePanel extends javax.swing.JPanel implements ScoreChart.Listener
 	Board board;
 	boolean isComputerEnabled;
 	boolean justWon;
+	String buzzer = "buzzer3_x.wav";
+	String winner = "applause3.wav";
+	String selection = "bloop_x.wav";
+	AudioInputStream audioInputStream;
 	
 	public GamePanel(GUI gui, boolean isComputerEnabled) {
 		//whoPlayed = 1;
@@ -402,7 +415,8 @@ public class GamePanel extends javax.swing.JPanel implements ScoreChart.Listener
 						player.getBoard().play(getColumnNum(), player);
 					}
 					else if(game.getCurrentPlayer() == players[1]){
-						GUIWrapperPlayer player = (GUIWrapperPlayer)game.getCurrentPlayer();						   player.getBoard().play(getColumnNum(), player);
+						GUIWrapperPlayer player = (GUIWrapperPlayer)game.getCurrentPlayer();
+						player.getBoard().play(getColumnNum(), player);
 					}
 					
 				}
@@ -424,7 +438,8 @@ public class GamePanel extends javax.swing.JPanel implements ScoreChart.Listener
 						player.getBoard().play(getColumnNum(), player);
 					}
 					else if(game.getCurrentPlayer() == players[1]){
-						GUIWrapperPlayer player = (GUIWrapperPlayer)game.getCurrentPlayer();						   player.getBoard().play(getColumnNum(), player);
+						GUIWrapperPlayer player = (GUIWrapperPlayer)game.getCurrentPlayer();						   
+						player.getBoard().play(getColumnNum(), player);
 					}
 				}
 				
@@ -462,6 +477,24 @@ public class GamePanel extends javax.swing.JPanel implements ScoreChart.Listener
 		boolean valid = true;
 		if(board.getColumnHeight(getColumnNum()) > 5){
 			valid = false;
+			try {
+			audioInputStream = AudioSystem.getAudioInputStream(new File("sounds/"+buzzer).getAbsoluteFile());
+			Clip clip = AudioSystem.getClip();
+			clip.open(audioInputStream);
+			clip.start();
+			} catch(IOException | UnsupportedAudioFileException|LineUnavailableException a) {
+			    System.out.println(a);
+			}
+		}
+		else {
+		try {
+            audioInputStream = AudioSystem.getAudioInputStream(new File("sounds/"+selection).getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+            } catch(IOException | UnsupportedAudioFileException|LineUnavailableException a) {
+                System.out.println(a);
+            }
 		}
 		return valid;
 	}
@@ -557,14 +590,17 @@ public class GamePanel extends javax.swing.JPanel implements ScoreChart.Listener
 
 				//Turn goes up, unless there is a tie
 				if(turnNum == 42){
-					for (GUIPiece piece : pieces) {
-						piece.setIcon(null);
-						topGlass.remove(piece);
-					}
-					gui.setWinner("It's a tie!");
-					board.clear();
-					initNewGame();
-					gui.addGameOver();
+				    gui.setWinner("It's a tie!");
+		            board.clear();
+		            for (GUIPiece piece : pieces) {
+		                if(piece != null) {
+		                    piece.setIcon(null);
+		                    topGlass.remove(piece);
+		                }
+		            }
+		            initNewGame();
+		            gui.addGameOver();
+		            justWon = true;
 				}
 				else{
 					pieces[turnNum] = new GUIPiece(turnNum%2);
@@ -593,6 +629,14 @@ public class GamePanel extends javax.swing.JPanel implements ScoreChart.Listener
 			}
 		}
 		else{
+		    try {
+	            audioInputStream = AudioSystem.getAudioInputStream(new File("sounds/"+winner).getAbsoluteFile());
+	            Clip clip = AudioSystem.getClip();
+	            clip.open(audioInputStream);
+	            clip.start();
+	            } catch(IOException | UnsupportedAudioFileException|LineUnavailableException a) {
+	                System.out.println(a);
+	            }
 			justWon = false;
 		}
 	}
@@ -653,6 +697,19 @@ public class GamePanel extends javax.swing.JPanel implements ScoreChart.Listener
 					gui.addGameOver();
 					justWon = true;
 		}
+		else {
+		    gui.setWinner("It's a tie!");
+            board.clear();
+            for (GUIPiece piece : pieces) {
+                if(piece != null) {
+                    piece.setIcon(null);
+                    topGlass.remove(piece);
+                }
+            }
+            initNewGame();
+            gui.addGameOver();
+            justWon = true;
+		}
 	}
 	
 	
@@ -664,15 +721,13 @@ public class GamePanel extends javax.swing.JPanel implements ScoreChart.Listener
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				long tick = GLOW_START_TIME - System.currentTimeMillis();
-				tick = (-1*tick/100);
-				//System.out.println(tick%6);
+				tick = (1*tick/100);
+				//System.out.println("tick " + tick%6);
 				cP.setIcon(cP.getGlow((int)tick%6));
 				topGlass.invalidate();
 				topGlass.revalidate();
 				topGlass.repaint();
 				}
-
-			
 		    
 		});
 		timer.setRepeats(true);

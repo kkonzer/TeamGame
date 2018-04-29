@@ -6,6 +6,15 @@
 
 package connect.four.gui;
 
+import java.io.File;
+import java.io.IOException;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 import connect.four.Game;
 
 
@@ -14,6 +23,9 @@ public class MainMenuPanel extends javax.swing.JPanel {
 	private String name1, name2;
 	GUI gui;
 	private boolean isEnabled;
+	String background = "MoodyLoop.wav";
+    String start = "gong.wav";
+    AudioInputStream audioInputStream;
 	
 	public MainMenuPanel(GUI gui) {
 		initComponents();
@@ -149,6 +161,14 @@ public class MainMenuPanel extends javax.swing.JPanel {
 		gui.remove(this);
 		gui.addGamePanel();
 		gui.updateDisplay();
+		try {
+            audioInputStream = AudioSystem.getAudioInputStream(new File("sounds/"+ start).getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+            } catch(IOException | UnsupportedAudioFileException|LineUnavailableException a) {
+                System.out.println(a);
+            }
         }//GEN-LAST:event_butPlayActionPerformed
 
         private void jtComputerToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtComputerToggleActionPerformed

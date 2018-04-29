@@ -3,6 +3,7 @@ package connect.four;
 
 import connect.four.player.Player;
 import connect.four.board.ReadableBoard;
+import connect.four.board.ColumnFullException;
 import connect.four.board.ReadWritableBoard;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,7 +59,11 @@ public class Game implements ScoreChart {
                     throw new Error(p+" Played more than once in a turn.");
                 }
                 played = true;
-                m_board.play(x, p);
+                try {
+                m_board.play(x, p); }
+                catch(ColumnFullException e) {
+                    System.out.println(e);
+                }
 		Player win = detectWinner(m_board, m_inRow);
                 if (win != null) {
                     m_scores[player] += 1;
@@ -67,7 +72,7 @@ public class Game implements ScoreChart {
                     }
                     m_board.clear();
                     performPlay(player);
-		} else if (m_board.getMoveCount() == m_board.getWidth()*m_board.getHeight() ) {
+		        } else if (m_board.getMoveCount() == m_board.getWidth()*m_board.getHeight() ) {
                     for (ScoreChart.Listener l : m_listeners) {
                         l.gameOver(null, Game.this, m_board);
                     }

@@ -43,20 +43,25 @@ public class Board implements ReadWritableBoard {
         return m_contents[0].length;
     }
     public @Override void play(int x, Player p) {
+        //System.out.println("callingH");
         int y = getColumnHeight(x);
         if (y == m_contents[x].length) {
+            System.out.println("ExceptionThrown");
             throw new ColumnFullException();
         }
-        m_contents[x][y] = p;
+        else {
+        m_contents[x][y] = p; 
+        }
         m_moveCount += 1;
     }
     
     public @Override int getColumnHeight(int x){
         int y = 0;
-	int l = m_contents[0].length;
+	    int l = m_contents[0].length;
         while (y != l && m_contents[x][y] != null) {
             y += 1;
         }
+        //System.out.println("coloumnheight" + y);
         return y;
     }
     public @Override void clear() {

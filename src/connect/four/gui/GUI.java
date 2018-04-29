@@ -6,6 +6,15 @@
 
 package connect.four.gui;
 
+import java.io.File;
+import java.io.IOException;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 import connect.four.*;
 import connect.four.board.*;
 import connect.four.player.*;
@@ -20,6 +29,8 @@ public class GUI extends javax.swing.JFrame {
 	String p2Name;
 	String winner;
 	int score1, score2;
+	String background = "MoodyLoop.wav";
+    AudioInputStream audioInputStream;
 	
 	public GUI() {
 		initComponents();
@@ -27,6 +38,15 @@ public class GUI extends javax.swing.JFrame {
 		score2 = 0;
 		//gamePanel = new GamePanel(this);
 		mainMenu = new MainMenuPanel(this);
+		try {
+            audioInputStream = AudioSystem.getAudioInputStream(new File("sounds/"+ background).getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+            clip.loop(clip.LOOP_CONTINUOUSLY);
+            } catch(IOException | UnsupportedAudioFileException|LineUnavailableException a) {
+                System.out.println(a);
+            }
 		add(mainMenu);
 		
 	}
